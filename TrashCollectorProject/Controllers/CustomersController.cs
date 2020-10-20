@@ -36,7 +36,7 @@ namespace TrashCollectorProject.Controllers
             var userID = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
             var customer = _context.Customers.Where(c => c.IdentityUserId == userID).SingleOrDefault();
             
-            if (customer.IdentityUserId.Equals(null))
+            if (customer == null)
             {
                 return RedirectToAction(nameof(Create));
                 //return NotFound();
@@ -49,7 +49,7 @@ namespace TrashCollectorProject.Controllers
             {
                 return NotFound();
             }
-            
+            ViewData["PickupDayId"] = (_context.Days, "Id", "Name", customer.PickupDayId);
             ViewData["ZipCodeId"] = (_context.ZipCodes, "Id", "Code");
             return View(customer);
         }
@@ -57,6 +57,7 @@ namespace TrashCollectorProject.Controllers
         // GET: Customers/Create
         public IActionResult Create()
         {
+            ViewData["PickupDayId"] = new SelectList(_context.Days.ToList(), "Id", "Name");
             ViewData["ZipCodeId"] = new SelectList(_context.ZipCodes.ToList(), "Id", "Code");
             return View();
         }
@@ -66,7 +67,7 @@ namespace TrashCollectorProject.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id,FirstName,LastName,ZipCodeId,PickupDate,SpecialPickup,SuspendStart,SuspendEnd,Balance")] Customer customer)
+        public async Task<IActionResult> Create([Bind("id,FirstName,LastName,IdentityUserId,ZipCodeId,PickupDayId,SpecialPickup,SuspendStart,SuspendEnd,Balance")] Customer customer)
         {
             if (ModelState.IsValid)
             {
@@ -76,6 +77,7 @@ namespace TrashCollectorProject.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["PickupDayId"] = new SelectList(_context.Days.ToList(), "Id", "Name", customer.PickupDayId);
             ViewData["ZipCodeId"] = new SelectList(_context.ZipCodes.ToList(), "Id", "Code", customer.ZipCodeId);
             return View(customer);
         }
@@ -93,6 +95,7 @@ namespace TrashCollectorProject.Controllers
             {
                 return NotFound();
             }
+            ViewData["PickupDayId"] = new SelectList(_context.Days.ToList(), "Id", "Name", customer.PickupDayId);
             ViewData["ZipCodeId"] = new SelectList(_context.ZipCodes.ToList(), "Id", "Code", customer.ZipCodeId);
             return View(customer);
         }
@@ -102,7 +105,7 @@ namespace TrashCollectorProject.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("id,FirstName,LastName,ZipCodeId,PickupDate,SpecialPickup,SuspendStart,SuspendEnd,Balance")] Customer customer)
+        public async Task<IActionResult> Edit(int id, [Bind("id,FirstName,LastName,IdentityUserId,ZipCodeId,PickupDayId,SpecialPickup,SuspendStart,SuspendEnd,Balance")] Customer customer)
         {
             if (id != customer.id)
             {
@@ -129,6 +132,7 @@ namespace TrashCollectorProject.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["PickupDayId"] = new SelectList(_context.Days.ToList(), "Id", "Name", customer.PickupDayId);
             ViewData["ZipCodeId"] = new SelectList(_context.ZipCodes.ToList(), "Id", "Code", customer.ZipCodeId);
             return View(customer);
         }

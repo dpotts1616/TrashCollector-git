@@ -10,7 +10,6 @@ namespace TrashCollectorProject.Models
     {
         [Key]
         public int Id { get; set; }
-        //[DataType(DataType.PostalCode)]
         public string Code { get; set; }
 
     }

@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TrashCollectorProject.Data;
 
-namespace TrashCollectorProject.Data.Migrations
+namespace TrashCollectorProject.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20201019192525_added employee controller")]
-    partial class addedemployeecontroller
+    [Migration("20201020154143_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -50,10 +50,17 @@ namespace TrashCollectorProject.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "63755a24-44ba-4916-8c0c-1a329f69a954",
-                            ConcurrencyStamp = "33cdaf47-f53c-41f9-9257-0a0e6c55f237",
-                            Name = "Admin",
-                            NormalizedName = "ADMIN"
+                            Id = "bec71345-8731-4369-bad2-f985eb5abe4a",
+                            ConcurrencyStamp = "8336804c-ba61-4c31-ac38-b06db558dc73",
+                            Name = "Customer",
+                            NormalizedName = "CUSTOMER"
+                        },
+                        new
+                        {
+                            Id = "9b911db0-2f85-4e8c-ba8d-abecc2b8d623",
+                            ConcurrencyStamp = "55b079ad-70ea-4c61-a9bc-49e5e4d7c234",
+                            Name = "Employee",
+                            NormalizedName = "EMPLOYEE"
                         });
                 });
 
@@ -239,19 +246,22 @@ namespace TrashCollectorProject.Data.Migrations
                     b.Property<string>("FirstName")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("IdentityUserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("LastName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("PickupDate")
+                    b.Property<int>("PickupDayId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("SpecialPickup")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("SpecialPickup")
+                    b.Property<DateTime?>("SuspendEnd")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("SuspendEnd")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("SuspendStart")
+                    b.Property<DateTime?>("SuspendStart")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("ZipCodeId")
@@ -259,9 +269,28 @@ namespace TrashCollectorProject.Data.Migrations
 
                     b.HasKey("id");
 
+                    b.HasIndex("IdentityUserId");
+
+                    b.HasIndex("PickupDayId");
+
                     b.HasIndex("ZipCodeId");
 
-                    b.ToTable("Customer");
+                    b.ToTable("Customers");
+                });
+
+            modelBuilder.Entity("TrashCollectorProject.Models.Day", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Days");
                 });
 
             modelBuilder.Entity("TrashCollectorProject.Models.Employee", b =>
@@ -274,6 +303,9 @@ namespace TrashCollectorProject.Data.Migrations
                     b.Property<string>("FirstName")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("IdentityUserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("LastName")
                         .HasColumnType("nvarchar(max)");
 
@@ -282,9 +314,11 @@ namespace TrashCollectorProject.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("IdentityUserId");
+
                     b.HasIndex("ZipCodeId");
 
-                    b.ToTable("Employee");
+                    b.ToTable("Employees");
                 });
 
             modelBuilder.Entity("TrashCollectorProject.Models.ZipCode", b =>
@@ -299,7 +333,7 @@ namespace TrashCollectorProject.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ZipCode");
+                    b.ToTable("ZipCodes");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -355,6 +389,16 @@ namespace TrashCollectorProject.Data.Migrations
 
             modelBuilder.Entity("TrashCollectorProject.Models.Customer", b =>
                 {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "IdentityUser")
+                        .WithMany()
+                        .HasForeignKey("IdentityUserId");
+
+                    b.HasOne("TrashCollectorProject.Models.Day", "PickupDay")
+                        .WithMany()
+                        .HasForeignKey("PickupDayId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("TrashCollectorProject.Models.ZipCode", "ZipCode")
                         .WithMany()
                         .HasForeignKey("ZipCodeId")
@@ -364,6 +408,10 @@ namespace TrashCollectorProject.Data.Migrations
 
             modelBuilder.Entity("TrashCollectorProject.Models.Employee", b =>
                 {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "IdentityUser")
+                        .WithMany()
+                        .HasForeignKey("IdentityUserId");
+
                     b.HasOne("TrashCollectorProject.Models.ZipCode", "ZipCode")
                         .WithMany()
                         .HasForeignKey("ZipCodeId")
