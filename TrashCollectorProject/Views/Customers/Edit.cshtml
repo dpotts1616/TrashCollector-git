@@ -30,9 +30,9 @@
                 <span asp-validation-for="ZipCodeId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="PickupDate" class="control-label"></label>
-                <input asp-for="PickupDate" class="form-control" />
-                <span asp-validation-for="PickupDate" class="text-danger"></span>
+                <label asp-for="PickupDay" class="control-label"></label>
+                <input asp-for="PickupDay" class="form-control" />
+                <span asp-validation-for="PickupDay" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="SpecialPickup" class="control-label"></label>
@@ -50,11 +50,6 @@
                 <span asp-validation-for="SuspendEnd" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Balance" class="control-label"></label>
-                <input asp-for="Balance" class="form-control" />
-                <span asp-validation-for="Balance" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
@@ -62,7 +57,7 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Details</a>
 </div>
 
 @section Scripts {

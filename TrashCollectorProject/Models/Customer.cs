@@ -26,18 +26,20 @@ namespace TrashCollectorProject.Models
         public int ZipCodeId { get; set; }
         public ZipCode ZipCode { get; set; }
 
-        [Display(Name = "Pickup Date")]
-        [DataType(DataType.Date)]
-        public DateTime PickupDate { get; set; }
+        [ForeignKey("PickupDay")]
+        [Display(Name = "Pickup Day")]
+        public int PickupDayId { get; set; }
+        public Day PickupDay { get; set; }
+
         [Display(Name = "Special Pickup Date")]
         [DataType(DataType.Date)]
-        public DateTime SpecialPickup { get; set; }
+        public DateTime? SpecialPickup { get; set; }
         [Display(Name = "Suspension Start")]
         [DataType(DataType.Date)]
-        public DateTime SuspendStart { get; set; }
+        public DateTime? SuspendStart { get; set; }
         [Display(Name = "Suspension End")]
         [DataType(DataType.Date)]
-        public DateTime SuspendEnd { get; set; }
+        public DateTime? SuspendEnd { get; set; }
         [Display(Name ="Balance Due")]
         public double Balance { get; set; }
 

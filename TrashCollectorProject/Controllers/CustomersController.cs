@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -11,6 +13,7 @@ using TrashCollectorProject.Models;
 
 namespace TrashCollectorProject.Controllers
 {
+    [Authorize(Roles = "Customer")]
     public class CustomersController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -20,36 +23,41 @@ namespace TrashCollectorProject.Controllers
             _context = context;
         }
 
-        // GET: Customers
-        public async Task<IActionResult> Index()
-        {
-            var applicationDbContext = _context.Customers.Include(c => c.ZipCode);
-            return View(await applicationDbContext.ToListAsync());
-        }
+        //// GET: Customers
+        //public async Task<IActionResult> Index()
+        //{
+        //    var applicationDbContext = _context.Customers.Include(c => c.ZipCode);
+        //    return View(await applicationDbContext.ToListAsync());
+        //}
 
         // GET: Customers/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Index()
         {
-            if (id == null)
+            var userID = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var customer = _context.Customers.Where(c => c.IdentityUserId == userID).SingleOrDefault();
+            
+            if (customer.IdentityUserId.Equals(null))
             {
-                return NotFound();
+                return RedirectToAction(nameof(Create));
+                //return NotFound();
             }
 
-            var customer = await _context.Customers
-                .Include(c => c.ZipCode)
-                .FirstOrDefaultAsync(m => m.id == id);
+            //customer = await _context.Customers
+            //    .Include(c => c.ZipCode)
+            //    .FirstOrDefaultAsync(m => m.id == id);
             if (customer == null)
             {
                 return NotFound();
             }
-
+            
+            ViewData["ZipCodeId"] = (_context.ZipCodes, "Id", "Code");
             return View(customer);
         }
 
         // GET: Customers/Create
         public IActionResult Create()
         {
-            ViewData["ZipCodeId"] = new SelectList(_context.Set<ZipCode>(), "Id", "Id");
+            ViewData["ZipCodeId"] = new SelectList(_context.ZipCodes.ToList(), "Id", "Code");
             return View();
         }
 
@@ -62,11 +70,13 @@ namespace TrashCollectorProject.Controllers
         {
             if (ModelState.IsValid)
             {
+                var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                customer.IdentityUserId = userId;
                 _context.Add(customer);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ZipCodeId"] = new SelectList(_context.Set<ZipCode>(), "Id", "Id", customer.ZipCodeId);
+            ViewData["ZipCodeId"] = new SelectList(_context.ZipCodes.ToList(), "Id", "Code", customer.ZipCodeId);
             return View(customer);
         }
 
@@ -83,7 +93,7 @@ namespace TrashCollectorProject.Controllers
             {
                 return NotFound();
             }
-            ViewData["ZipCodeId"] = new SelectList(_context.Set<ZipCode>(), "Id", "Id", customer.ZipCodeId);
+            ViewData["ZipCodeId"] = new SelectList(_context.ZipCodes.ToList(), "Id", "Code", customer.ZipCodeId);
             return View(customer);
         }
 
@@ -119,7 +129,7 @@ namespace TrashCollectorProject.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ZipCodeId"] = new SelectList(_context.Set<ZipCode>(), "Id", "Id", customer.ZipCodeId);
+            ViewData["ZipCodeId"] = new SelectList(_context.ZipCodes.ToList(), "Id", "Code", customer.ZipCodeId);
             return View(customer);
         }
 

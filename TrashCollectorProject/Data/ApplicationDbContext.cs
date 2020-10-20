@@ -42,5 +42,7 @@ namespace TrashCollectorProject.Data
         public DbSet<Employee> Employees { get; set; }
 
         public DbSet<ZipCode> ZipCodes { get; set; }
+
+        public DbSet<Day> Days { get; set; }
     }
 }
