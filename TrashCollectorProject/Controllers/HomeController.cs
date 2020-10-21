@@ -9,6 +9,7 @@ using TrashCollectorProject.Models;
 
 namespace TrashCollectorProject.Controllers
 {
+
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -22,6 +23,7 @@ namespace TrashCollectorProject.Controllers
         {
             return View();
         }
+
 
         public IActionResult Privacy()
         {

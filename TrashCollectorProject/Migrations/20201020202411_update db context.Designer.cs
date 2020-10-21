@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TrashCollectorProject.Data;
 
 namespace TrashCollectorProject.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201020202411_update db context")]
+    partial class updatedbcontext
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -49,14 +51,14 @@ namespace TrashCollectorProject.Migrations
                         new
                         {
                             Id = "24cc24db-7b4a-471b-b620-3e50742c7f19",
-                            ConcurrencyStamp = "4c1c9a0b-e4fc-4942-b217-7424eb40ff91",
+                            ConcurrencyStamp = "91cf0f62-dd37-4632-b5f6-4215a74837be",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         },
                         new
                         {
                             Id = "30b01b69-42e6-4020-af89-c470ec2167ef",
-                            ConcurrencyStamp = "72908849-3005-4287-9098-9385bd43ad21",
+                            ConcurrencyStamp = "c5926cfb-27be-4b02-9bf2-493a6bdfc138",
                             Name = "Employee",
                             NormalizedName = "EMPLOYEE"
                         });
@@ -244,9 +246,6 @@ namespace TrashCollectorProject.Migrations
                     b.Property<double>("Balance")
                         .HasColumnType("float");
 
-                    b.Property<string>("City")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("FirstName")
                         .HasColumnType("nvarchar(max)");
 
@@ -261,9 +260,6 @@ namespace TrashCollectorProject.Migrations
 
                     b.Property<DateTime?>("SpecialPickup")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("State")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("SuspendEnd")
                         .HasColumnType("datetime2");

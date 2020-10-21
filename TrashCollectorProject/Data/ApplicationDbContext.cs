@@ -23,6 +23,7 @@ namespace TrashCollectorProject.Data
                 .HasData(
                 new IdentityRole
                 {
+                    Id = "24cc24db-7b4a-471b-b620-3e50742c7f19",
                     Name = "Customer",
                     NormalizedName = "CUSTOMER"
                 }
@@ -31,6 +32,7 @@ namespace TrashCollectorProject.Data
                 .HasData(
                 new IdentityRole
                 {
+                    Id = "30b01b69-42e6-4020-af89-c470ec2167ef",
                     Name = "Employee",
                     NormalizedName = "EMPLOYEE"
                 }

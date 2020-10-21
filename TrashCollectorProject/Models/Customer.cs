@@ -21,6 +21,13 @@ namespace TrashCollectorProject.Models
         public string IdentityUserId { get; set; }
         public IdentityUser IdentityUser { get; set; }
 
+        [Display(Name = "Address")]
+        public string Address { get; set; }
+        [Display(Name = "City")]
+        public string City { get; set; }
+        [Display(Name ="State")]
+        public string State { get; set; }
+
         [ForeignKey("ZipCode")]
         [Display(Name ="Zip Code")]
         public int ZipCodeId { get; set; }
