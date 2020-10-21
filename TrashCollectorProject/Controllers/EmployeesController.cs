@@ -35,10 +35,12 @@ namespace TrashCollectorProject.Controllers
 
             string day = DateTime.Today.DayOfWeek.ToString();
 
+            var exclusionList = _context.Customers.Include(e => e.ZipCode).Include(e => e.PickupDay)
+                .Where(e => e.SuspendStart <= DateTime.Today && DateTime.Today <= e.SuspendEnd);
+
             var todaysPickups = _context.Customers.Include(e => e.ZipCode).Include(e => e.PickupDay)
                 .Where(e => e.ZipCodeId == employee.ZipCodeId
-                && e.PickupDay.Name == day)
-                .SkipWhile(e => e.SuspendStart <= DateTime.Today && DateTime.Today <= e.SuspendEnd);
+                && e.PickupDay.Name == day).Except(exclusionList);
             
 
             return View(await todaysPickups.ToListAsync());
