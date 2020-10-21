@@ -22,7 +22,7 @@ namespace TrashCollectorProject.Controllers
             _context = context;
         }
 
-        // GET: Employees
+        // GET: List of Today's Pickups
         public async Task<IActionResult> Index()
         {
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -42,6 +42,20 @@ namespace TrashCollectorProject.Controllers
                 .Where(e => e.ZipCodeId == employee.ZipCodeId
                 && e.PickupDay.Name == day).Except(exclusionList);
             
+
+            return View(await todaysPickups.ToListAsync());
+        }
+
+        //POST: Look at all pickups for specific day
+        public async Task<IActionResult> Day(string day)
+        {
+            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var employee = _context.Employees.Where(c => c.IdentityUserId == userId).SingleOrDefault();
+            
+
+            var todaysPickups = _context.Customers.Include(e => e.ZipCode).Include(e => e.PickupDay)
+               .Where(e => e.ZipCodeId == employee.ZipCodeId
+               && e.PickupDay.Name == day);
 
             return View(await todaysPickups.ToListAsync());
         }
