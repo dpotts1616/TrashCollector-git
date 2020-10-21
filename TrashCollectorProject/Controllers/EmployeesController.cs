@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -24,8 +25,23 @@ namespace TrashCollectorProject.Controllers
         // GET: Employees
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Employees.Include(e => e.ZipCode);
-            return View(await applicationDbContext.ToListAsync());
+            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var employee = _context.Employees.Where(c => c.IdentityUserId == userId).SingleOrDefault();
+
+            if (employee == null)
+            {
+                return RedirectToAction(nameof(Create));
+            }
+
+            string day = DateTime.Today.DayOfWeek.ToString();
+
+            var todaysPickups = _context.Customers.Include(e => e.ZipCode).Include(e => e.PickupDay)
+                .Where(e => e.ZipCodeId == employee.ZipCodeId
+                && e.PickupDay.Name == day)
+                .SkipWhile(e => e.SuspendStart <= DateTime.Today && DateTime.Today <= e.SuspendEnd);
+            
+
+            return View(await todaysPickups.ToListAsync());
         }
 
         // GET: Employees/Details/5
@@ -63,6 +79,8 @@ namespace TrashCollectorProject.Controllers
         {
             if (ModelState.IsValid)
             {
+                var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                employee.IdentityUserId = userId;
                 _context.Add(employee);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

@@ -22,7 +22,7 @@ namespace TrashCollectorProject.Models
         public IdentityUser IdentityUser { get; set; }
 
         [ForeignKey("ZipCode")]
-        [Display(Name = "Zip Code")]
+        [Display(Name = "Assigned Zip Code")]
         public int ZipCodeId { get; set; }
         public ZipCode ZipCode { get; set; }
     }
