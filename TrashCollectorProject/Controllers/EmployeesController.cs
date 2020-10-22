@@ -63,8 +63,6 @@ namespace TrashCollectorProject.Controllers
         }
 
         //Complete Pickup for client
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
         public IActionResult CompletePickup(int? id)
         {
             var customer = _context.Customers.Where(c => c.id == id).SingleOrDefault();
@@ -92,6 +90,26 @@ namespace TrashCollectorProject.Controllers
             }
 
             return View(employee);
+        }
+
+        // GET: Customer Details/Map
+        public async Task<IActionResult> CustomerDetails(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var customer = await _context.Customers
+                .Include(e => e.ZipCode)
+                .Include(e => e.PickupDay)
+                .FirstOrDefaultAsync(m => m.id == id);
+            if (customer == null)
+            {
+                return NotFound();
+            }
+
+            return View(customer);
         }
 
         // GET: Employees/Create
