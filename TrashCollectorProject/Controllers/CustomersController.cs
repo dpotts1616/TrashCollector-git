@@ -22,12 +22,6 @@ namespace TrashCollectorProject.Controllers
             _context = context;
         }
 
-        //// GET: Customers
-        //public async Task<IActionResult> Index()
-        //{
-        //    var applicationDbContext = _context.Customers.Include(c => c.IdentityUser).Include(c => c.PickupDay).Include(c => c.ZipCode);
-        //    return View(await applicationDbContext.ToListAsync());
-        //}
 
         // GET: Customers/Details/5
         public async Task<IActionResult> Index()

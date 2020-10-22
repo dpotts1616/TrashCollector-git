@@ -40,13 +40,15 @@ namespace TrashCollectorProject.Controllers
 
             var todaysPickups = _context.Customers.Include(e => e.ZipCode).Include(e => e.PickupDay)
                 .Where(e => e.ZipCodeId == employee.ZipCodeId
-                && e.PickupDay.Name == day).Except(exclusionList);
+                && e.PickupDay.Name == day
+                || (e.ZipCodeId == employee.ZipCodeId
+                && e.SpecialPickup == DateTime.Today)).Except(exclusionList);
             
 
             return View(await todaysPickups.ToListAsync());
         }
 
-        //POST: Look at all pickups for specific day
+        //Get: Look at all pickups for specific day
         public async Task<IActionResult> Day(string day)
         {
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -58,6 +60,19 @@ namespace TrashCollectorProject.Controllers
                && e.PickupDay.Name == day);
 
             return View(await todaysPickups.ToListAsync());
+        }
+
+        //Complete Pickup for client
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        public IActionResult CompletePickup(int? id)
+        {
+            var customer = _context.Customers.Where(c => c.id == id).SingleOrDefault();
+            customer.Balance += 10;
+            _context.Update(customer);
+            _context.SaveChanges();
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Employees/Details/5
