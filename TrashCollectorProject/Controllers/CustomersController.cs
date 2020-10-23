@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Update;
+using Newtonsoft.Json.Linq;
 using TrashCollectorProject.Data;
 using TrashCollectorProject.Models;
 
@@ -66,6 +69,17 @@ namespace TrashCollectorProject.Controllers
             {
                 var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
                 customer.IdentityUserId = userId;
+
+                string url = $"https://maps.googleapis.com/maps/api/geocode/json?address={customer.Address}+{customer.City}+{customer.State}+&key={APIKeys.GOOGLE_API_KEY}";
+
+                HttpClient client = new HttpClient();
+                HttpResponseMessage response = await client.GetAsync(url);
+                string jsonResult = await response.Content.ReadAsStringAsync();
+
+                JObject jObject = JObject.Parse(jsonResult);
+                customer.Latitude = (double)jObject["results"][0]["geometry"]["location"]["lat"];
+                customer.Longitude = (double)jObject["results"][0]["geometry"]["location"]["lng"];
+
                 _context.Add(customer);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

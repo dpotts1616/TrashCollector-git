@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Transactions;
 
 namespace TrashCollectorProject.Models
 {
@@ -49,6 +50,9 @@ namespace TrashCollectorProject.Models
         public DateTime? SuspendEnd { get; set; }
         [Display(Name ="Balance Due")]
         public double Balance { get; set; }
+
+        public double Latitude { get; set; }
+        public double Longitude { get; set; }
 
 
     }

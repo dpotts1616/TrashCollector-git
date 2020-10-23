@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 using Geocoding;
 using Geocoding.Google;
@@ -111,10 +112,7 @@ namespace TrashCollectorProject.Controllers
                 return NotFound();
             }
 
-            //string customerAddress = $"{customer.Address} {customer.City} {customer.State}";
-            //IGeocoder geocoder = new GoogleGeocoder();
-            //IEnumerable<GoogleAddress> address = await geocoder.GeocodeAsync(customerAddress);
-
+            ViewData["Address"] = customer.Address.Replace(" ", "+");
             return View(customer);
         }
 
